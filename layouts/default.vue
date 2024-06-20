@@ -2,17 +2,22 @@
 	<v-app id="inspire">
 		<v-navigation-drawer v-model="drawer">
 			<nav>
-				<ul>
-					<li><NuxtLink to="/index">Home</NuxtLink></li>
-					<li><NuxtLink to="/devkits">Dev Kits</NuxtLink></li>
-				</ul>
+				<v-list>
+					<v-list-item
+						v-for="[icon, text, url] in links"
+						:key="icon"
+						:prepend-icon="icon"
+						:title="text"
+						:to="url"
+						link
+					></v-list-item>
+				</v-list>
 			</nav>
 		</v-navigation-drawer>
 
 		<v-app-bar>
 			<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-			<v-app-bar-title>Application</v-app-bar-title>
+			<v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 		</v-app-bar>
 
 		<v-main>
@@ -22,13 +27,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
 const drawer = ref(null);
-</script>
+const route = useRoute();
 
-<script>
-export default {
-	data: () => ({ drawer: null }),
-};
+const links = ref([
+	['mdi-home-variant-outline', 'Home', '/'],
+	['mdi-toolbox-outline', 'Dev Kits', '/devkits'],
+]);
+
+const pageTitle = ref('Application');
+watchEffect(() => {
+	switch (route.path) {
+		default:
+			pageTitle.value = 'Home';
+			break;
+		case '/':
+			pageTitle.value = 'Home';
+			break;
+		case '/devkits':
+			pageTitle.value = 'Dev Kits';
+			break;
+	}
+});
 </script>
